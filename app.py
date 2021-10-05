@@ -9,13 +9,16 @@ def process(input_proof):
 	result = openai.Completion.create(
 	  engine="davinci",
 	  prompt=
-	'MathematicalAI knows how to briefly write any mathematical proof in english, for the following statement:\n"""{}""".\nIt outputs the following steps for proving the statement:\n1)"""'.format(input_proof),
-	  max_tokens=400,
+	'This system knows how to clearly write any mathematical proof in english, when the proof ends, it always adds this symbol:□, for the following proposition:\n"""\n{}\n""".\nIt outputs the following simple and rigorous proof:\n1) '.format(input_proof),
+	  max_tokens=200,
 	  frequency_penalty = 0.4,
-	  best_of=1
+	  best_of=3,
+	  stop="□"
 	)
 
 	output = result["choices"][0]["text"]	
+	if output[0:2] != "1)":	
+		output = '1) '+result["choices"][0]["text"]	
 	return output
 
 app = Flask('__app__')
